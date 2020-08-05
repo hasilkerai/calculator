@@ -1,0 +1,43 @@
+.container {
+    width: 500px;
+    margin: auto;
+    border: 1px solid rgb(118, 118, 118);
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    padding-top: 10px;
+}
+
+.display {
+    grid-column: 1 / span 4;
+    border: 1px solid rgb(118, 118, 118);
+    text-align: right;
+    border-radius: 2px;
+}
+
+.display p {
+    padding: 0 10px;
+}
+
+.total {
+    font-size: 25px;
+}
+
+.equation {
+    font-size: 14px;
+    color: rgb(118, 118, 118);
+    height: 16px
+}
+
+.equals {
+    grid-column: 3 / span 2;
+}
+
+button {
+    height: 50px;
+}
