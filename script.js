@@ -6,10 +6,11 @@ const negativePositiveButton = document.querySelector('.negative-positive');
 const equalsButton = document.querySelector('.equals');
 const totalDisplay = document.querySelector('.total');
 const equationDisplay = document.querySelector('.equation');
+let operatorArray = ['+', '-', '×', '÷', '*', '/'];
 let num1 = "";
 let num2 = "";
 let tempNum = "";
-let operator;
+let currentOperator;
 
 function calculate(operate, a, b) {
     let operatorFunctions = {
@@ -29,85 +30,80 @@ function calculate(operate, a, b) {
     return operatorFunctions[operate](a, b);
 }
 
-function clearCalculator() {
-    num1 = '';
-    num2 = '';
-    operator = undefined;
-    totalDisplay.innerHTML = 0;
-    equationDisplay.innerHTML = '';
+function number(buttonValue) {
+    totalDisplay.id = 'erase-active';
+    if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=' || totalDisplay.innerHTML === 'Cannot divide by zero') clearCalculator();
+    if (String(num2) === '0') num2 = '';
+    if (buttonValue === '.' && num2.includes('.')) return;
+    num2 += buttonValue;
+    if (num2 === '.') num2 = '0.';
+    totalDisplay.innerHTML = num2;
 }
 
-numberButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        totalDisplay.id = 'erase-active';
-        if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=' || totalDisplay.innerHTML === 'Cannot divide by zero') clearCalculator();
-        if (String(num2) === '0') num2 = '';
-        if (button.innerHTML === '.' && num2.includes('.')) return;
-        num2 += button.innerHTML;
-        if (num2 === '.') num2 = '0.';
-        totalDisplay.innerHTML = num2;
-    });
-});
-
-operatorButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        let operatorArray = ['+', '-', '×', '÷'];
-        if (totalDisplay.innerHTML === 'Cannot divide by zero') clearCalculator();
-        if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=') {
-            equationDisplay.innerHTML = `${num1} ${button.innerHTML} `;
-            operator = button.innerHTML;
-        } else if (operatorArray.includes(equationDisplay.innerHTML[equationDisplay.innerHTML.length - 2]) && num2 === '') {
-            equationDisplay.innerHTML = equationDisplay.innerHTML.slice(0, -2);
-            equationDisplay.innerHTML = `${equationDisplay.innerHTML} ${button.innerHTML} `;
-            operator = button.innerHTML;
+function operator(buttonValue) {
+    if (totalDisplay.innerHTML === 'Cannot divide by zero') clearCalculator();
+    if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=') {
+        equationDisplay.innerHTML = `${num1} ${buttonValue} `;
+        currentOperator = buttonValue;
+    } else if (operatorArray.includes(equationDisplay.innerHTML[equationDisplay.innerHTML.length - 2]) && num2 === '') {
+        equationDisplay.innerHTML = equationDisplay.innerHTML.slice(0, -2);
+        equationDisplay.innerHTML = `${equationDisplay.innerHTML} ${buttonValue} `;
+        currentOperator = buttonValue;
+    } else {
+        equationDisplay.innerHTML += `${num2} ${buttonValue} `;
+        if (num1 !== '' && num2 !== '') {
+            num1 = calculate(currentOperator, parseFloat(num1), parseFloat(num2));
+            currentOperator === '÷' && num2 === '0' ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
+            currentOperator = buttonValue;
+        } else if (num1 === '' && num2 === '') {
+            currentOperator = buttonValue;
+            num1 = '0';
+            equationDisplay.innerHTML = `${num1} ${buttonValue} `;
         } else {
-            equationDisplay.innerHTML += `${num2} ${button.innerHTML} `;
-            if (num1 !== '' && num2 !== '') {
-                num1 = calculate(operator, parseFloat(num1), parseFloat(num2));
-                operator === '÷' && num2 === '0' ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
-                operator = button.innerHTML;
-            } else if (num1 === '' && num2 === '') {
-                operator = button.innerHTML;
-                num1 = '0';
-                equationDisplay.innerHTML = `${num1} ${button.innerHTML} `;
-            } else {
-                operator = button.innerHTML;
-                num1 = num2;
-            }
-            num2 = '';
+            currentOperator = buttonValue;
+            num1 = num2;
         }
-        totalDisplay.removeAttribute('id');
-    });
-});
+        num2 = '';
+    }
+    totalDisplay.removeAttribute('id');
+}
 
-equalsButton.addEventListener('click', () => {
+function equals() {
     if (totalDisplay.innerHTML === 'Cannot divide by zero') {
         clearCalculator();
         return;
-    } else if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=' && operator === undefined) {
+    } else if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=' && currentOperator === undefined) {
         return;
     } else if (equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] === '=') {
         num2 = tempNum;
-        equationDisplay.innerHTML = `${num1} ${operator} ${num2} ${equalsButton.innerHTML}`;
-        num1 = calculate(operator, parseFloat(num1), parseFloat(num2));
-        (operator === '÷' && num2 === '0') ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
+        equationDisplay.innerHTML = `${num1} ${currentOperator} ${num2} ${equalsButton.innerHTML}`;
+        num1 = calculate(currentOperator, parseFloat(num1), parseFloat(num2));
+        (currentOperator === '÷' && num2 === '0') ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
     } else {
-        if (operator === undefined) {
+        if (currentOperator === undefined) {
             if (num2 === '') num2 = '0';
             num1 = num2;
         } else {
             if (num2 === '') num2 = num1;
-            num1 = calculate(operator, parseFloat(num1), parseFloat(num2));
-            (operator === '÷' && num2 === '0') ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
+            num1 = calculate(currentOperator, parseFloat(num1), parseFloat(num2));
+            (currentOperator === '÷' && num2 === '0') ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
         }
         tempNum = num2;
         equationDisplay.innerHTML += `${num2} ${equalsButton.innerHTML}`;
     }
     num2 = '';
     totalDisplay.removeAttribute('id');
-});
+}
 
-negativePositiveButton.addEventListener('click', () => {
+function clearCalculator() {
+    num1 = '';
+    num2 = '';
+    currentOperator = undefined;
+    totalDisplay.innerHTML = 0;
+    equationDisplay.innerHTML = '';
+}
+
+function negativePositive() {
     if(num2 === '' && equationDisplay.innerHTML[equationDisplay.innerHTML.length - 1] !== '=' || totalDisplay.innerHTML === 'Cannot divide by zero') {
         return;
     } else if (totalDisplay.innerHTML > 0) {
@@ -122,14 +118,44 @@ negativePositiveButton.addEventListener('click', () => {
         num1 = num2;
         num2 = '';
     }
-});
+}
 
-backspaceButton.addEventListener('click', () => {
+function backspace() {
     if (totalDisplay.id === 'erase-active') {
         num2 = (num2.slice(0, -1));
         if (num2 === '' || num2 === '-') num2 = '0';
         totalDisplay.innerHTML = num2;
     }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        clearCalculator();
+    } else if (e.key.match(/[0-9.]/)) {
+        number(e.key);
+    } else if (operatorArray.includes(e.key)) {
+        switch(e.key) {
+            case '+': operator('+');
+            break;
+            case '-': operator('-');
+            break;
+            case '*': operator('×');
+            break;
+            case '/': operator('÷');
+            break;
+        }
+    } else if (e.key === '=' || e.key === 'Enter') {
+        equals();
+    } else if (e.key.toLowerCase() === 'n') {
+        negativePositive();
+    } else if (e.key === 'Backspace') {
+        backspace();
+    }
 });
 
-clearButton.addEventListener('click', clearCalculator);
+numberButtons.forEach(button => button.addEventListener('mousedown', () => number(button.innerHTML)));
+operatorButtons.forEach(button => button.addEventListener('mousedown', () => operator(button.innerHTML)));
+equalsButton.addEventListener('mousedown', equals);
+clearButton.addEventListener('mousedown', clearCalculator);
+negativePositiveButton.addEventListener('mousedown', negativePositive);
+backspaceButton.addEventListener('mousedown', backspace);
