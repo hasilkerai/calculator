@@ -53,7 +53,7 @@ function operator(buttonValue) {
         equationDisplay.innerHTML += `${num2} ${buttonValue} `;
         if (num1 !== '' && num2 !== '') {
             num1 = calculate(currentOperator, parseFloat(num1), parseFloat(num2));
-            currentOperator === '÷' && num2 === '0' ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
+            currentOperator === '÷' && parseFloat(num2) === 0 ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
             currentOperator = buttonValue;
         } else if (num1 === '' && num2 === '') {
             currentOperator = buttonValue;
@@ -78,7 +78,7 @@ function equals() {
         num2 = tempNum;
         equationDisplay.innerHTML = `${num1} ${currentOperator} ${num2} ${equalsButton.innerHTML}`;
         num1 = calculate(currentOperator, parseFloat(num1), parseFloat(num2));
-        (currentOperator === '÷' && num2 === '0') ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
+        (currentOperator === '÷' && parseFloat(num2) === 0) ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
     } else {
         if (currentOperator === undefined) {
             if (num2 === '') num2 = '0';
@@ -86,7 +86,7 @@ function equals() {
         } else {
             if (num2 === '') num2 = num1;
             num1 = calculate(currentOperator, parseFloat(num1), parseFloat(num2));
-            (currentOperator === '÷' && num2 === '0') ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
+            (currentOperator === '÷' && parseFloat(num2) === 0) ? totalDisplay.innerHTML = 'Cannot divide by zero' : totalDisplay.innerHTML = num1;
         }
         tempNum = num2;
         equationDisplay.innerHTML += `${num2} ${equalsButton.innerHTML}`;
