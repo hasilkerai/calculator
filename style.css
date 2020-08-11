@@ -1,43 +1,59 @@
 .container {
-    width: 500px;
-    margin: auto;
-    border: 1px solid rgb(118, 118, 118);
-    padding: 10px;
-    border-radius: 2px;
-}
-
-.keypad {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 10px;
-    padding-top: 10px;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: minmax(100px, auto) repeat(5, 75px);
+    margin: 100px auto;
+    width: max-content;
+    font-weight: bold;
 }
 
 .display {
     grid-column: 1 / span 4;
-    border: 1px solid rgb(118, 118, 118);
     text-align: right;
-    border-radius: 2px;
+    background-color: #a2bbcf;
 }
 
 .display p {
-    padding: 0 10px;
+    padding: 0 15px;
 }
 
 .total {
-    font-size: 25px;
+    font-size: 2em;
+    color: #18445c;
 }
 
 .equation {
-    font-size: 14px;
-    color: rgb(118, 118, 118);
-    height: 16px
+    font-size: 1.2em;
+    color: #18445c;
+    height: 17px;
+    margin: 32px 0;
 }
 
-.equals {
-    grid-column: 3 / span 2;
+.clear {
+    grid-column: 1 / span 2;
 }
 
 button {
-    height: 50px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #205b7a;
+    outline: none;
+    border: none;
+    border: 1px solid #a2bbcf;
+    color: #a2bbcf;
+}
+
+button:hover {
+    background-color: #205b7a;
+    opacity: 90%;
+}
+
+.operator, .backspace, .clear, .equals {
+    background-color: #18445c;
+}
+
+.operator:hover, .backspace:hover, .clear:hover, .equals:hover {
+    background-color: #18445c;
+    opacity: 90%;
 }
